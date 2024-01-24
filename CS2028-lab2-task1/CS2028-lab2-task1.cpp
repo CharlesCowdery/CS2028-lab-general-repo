@@ -53,6 +53,7 @@ void runGame() {
                 break;
             }
         }
+        //thisis a comment 
     }
     for (string name : names_chosen) {
         T1.players.push_back(Player(name));
