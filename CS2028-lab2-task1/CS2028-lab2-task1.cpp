@@ -6,6 +6,8 @@
 #include <random>
 using namespace std;
 
+
+
 class Player {
 public:
     string Name;
@@ -19,7 +21,8 @@ public:
     }
     bool PassBall() {
         int pull = rand() % 101;
-        int threshold =  
+        int threshold = 50 + (ShotsTaken > 0) ? (double)ShotsMade / ShotsTaken : 0;
+
     }
 };
 
