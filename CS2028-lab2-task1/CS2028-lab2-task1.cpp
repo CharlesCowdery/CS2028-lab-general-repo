@@ -54,8 +54,14 @@ void runGame() {
             }
         }
     }
+    for (string name : names_chosen) {
+        T1.players.push_back(Player(name));
+    }
+
     // this is a comment
 }
+
+//comment
 
 int main()
 {
