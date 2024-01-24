@@ -15,16 +15,26 @@ public:
     int ShotsMade       = 0;
     int PassesAttempted = 0;
     int PassesMade      = 1;
-public:
     Player(string _Name) {
         Name = _Name;
     }
     bool PassBall() {
         int pull = rand() % 101;
-        int threshold = 50 + (ShotsTaken > 0) ? (double)ShotsMade / ShotsTaken : 0;
-
+        int threshold = 50 + (ShotsTaken > 0) ? (double)ShotsMade / ShotsTaken*100 : 0;
+        return pull < threshold;
     }
 };
+
+struct Team {
+    vector<Player> players;
+    int points;
+    int possessions;
+};
+
+void runGame() {
+    Team T1;
+    Team T2;
+}
 
 int main()
 {
