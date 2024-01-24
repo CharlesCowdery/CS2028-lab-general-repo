@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string.h>
 #include <random>
+#include <set>
 using namespace std;
 
 
@@ -39,6 +40,20 @@ void runGame() {
     Team T1;
     Team T2;
     
+    const int number_of_players = 5;
+
+    set<string> names_chosen;
+    int name_count = Team::PlayerNames.size();
+    for (int i = 0; i < number_of_players; i++) { //get player names
+        while (true) {
+            int pick = rand() % (name_count);
+            string name = Team::PlayerNames[pick];
+            if (names_chosen.find(name) == names_chosen.end()) { //find returns set.end if name is not in set
+                names_chosen.insert(name);
+                break;
+            }
+        }
+    }
 }
 
 int main()
