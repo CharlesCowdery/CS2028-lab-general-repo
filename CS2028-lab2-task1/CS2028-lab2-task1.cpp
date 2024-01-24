@@ -19,7 +19,7 @@ public:
     }
     bool PassBall() {
         int pull = rand() % 101;
-        int 
+        int threshold =  
     }
 };
 
