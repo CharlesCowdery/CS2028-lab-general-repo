@@ -14,19 +14,20 @@ public:
     int ShotsTaken      = 0;
     int ShotsMade       = 0;
     int PassesAttempted = 0;
-    int PassesMade      = 1;
+    int PassesMade      = 0;
     Player(string _Name) {
         Name = _Name;
     }
     bool PassBall() {
         int pull = rand() % 101;
-        int threshold = 50 + (ShotsTaken > 0) ? (double)ShotsMade / ShotsTaken*100 : 0;
+        int modifier = (ShotsTaken > 0) ? (double)ShotsMade / ShotsTaken * 100 : 0;
+        int threshold = 50 + modifier;
         return pull < threshold;
     }
 };
 
 struct Team {
-    static const vector<string> PlayerNames;
+    static const vector<string> PlayerNames;//contains possible player names
     vector<Player> players;
     int points;
     int possessions;
