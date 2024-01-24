@@ -59,7 +59,7 @@ void runGame() {
         T1.players.push_back(Player(name));
     }
 
-    // this is a comment
+    // this is a comment x2
 }
 
 //comment
