@@ -55,6 +55,7 @@ void runGame() {
         }
         //thisis a comment 
     }
+    // this is a comment
 }
 
 int main()
