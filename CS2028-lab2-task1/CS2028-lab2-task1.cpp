@@ -12,7 +12,7 @@ public:
     int ShotsTaken      = 0;
     int ShotsMade       = 0;
     int PassesAttempted = 0;
-    int PassesMade      = 0;
+    int PassesMade      = 1;
 public:
     Player(string _Name) {
         Name = _Name;
