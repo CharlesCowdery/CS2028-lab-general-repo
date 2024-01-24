@@ -26,14 +26,18 @@ public:
 };
 
 struct Team {
+    static const vector<string> PlayerNames;
     vector<Player> players;
     int points;
     int possessions;
 };
+//Weird that I have to define it outside the struct but okay
+const vector<string> Team::PlayerNames = { "Jordan","Nate","Curry","Bob","Yogan","Gerschit","Steven","Charlie","Jeff","Tom","Lebron","Mr.Milk","Tony T.","Willy","Gebby" };
 
 void runGame() {
     Team T1;
     Team T2;
+    
 }
 
 int main()
