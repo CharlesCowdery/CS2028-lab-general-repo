@@ -1,4 +1,5 @@
 #include "heaps.h";
+#include <string.h>
 
 int Measure::getLittle() { return little; };
 int Measure::getLot() { return lot; };
@@ -24,7 +25,7 @@ int Measure::allLittles(){
     return (heap*23+lot)*7+little;
 };
 
-Measure Measure::operator +(Measure right) {
+Measure Measure::operator +(Measure& right) {
     return Measure(
         little + right.little,
         lot    + right.lot,
@@ -32,27 +33,27 @@ Measure Measure::operator +(Measure right) {
     );
     
 };
-Measure Measure::operator-(Measure right) {
+Measure Measure::operator-(Measure& right) {
     return Measure(
             little - right.little,
             lot    - right.lot,
             heap   - right.heap
         );
 };
-Measure operator *(Measure right) {
+Measure Measure::operator *(Measure& right) {
     return Measure(
         allLittles()*right.allLittles()
     );
 };
-Measure operator /(Measure right) {
+Measure Measure::operator /(Measure& right) {
     return Measure(
         allLittles()/right.allLittles()
     );
 };
-bool operator ==(Measure right) {
+bool Measure::operator ==(Measure& right) {
     return allLittles()==right.allLittles();
 };
-std::string Measure operator <<() {
+std::string Measure::operator <<() {
     return little.to_string() + "/" + lot.to_string() + "/" + heap.to_string();
 }; // operator -> string
 

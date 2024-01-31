@@ -15,9 +15,9 @@ class Measure {
         int getHeap() {};
 
         Measure operator+(Measure& right);
-        Measure operator-(Measure right);
-        Measure operator*(Measure right);
-        Measure operator/(Measure right);
-        bool operator==(Measure right);
-        void operator!(); // operator -> string
+        Measure operator-(Measure& right);
+        Measure operator*(Measure& right);
+        Measure operator/(Measure& right);
+        bool operator==(Measure& right);
+        void operator<<(); // operator -> string
 };
