@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 using namespace std;
 
 
@@ -9,7 +10,7 @@ public:
 	Show() : Show(0,"") {};
 	Show(string Title, string Description) : title(Title), description(Description) {}
 	string getTitle() { return title; }
-	string getDescription{ return description; }
+	string getDescription(){ return description; }
 	void setTitle(string& t) { title = t; }
 	void setDescription(string& d) { description = d; }
 
@@ -22,12 +23,12 @@ public:
 
 };
 
-class TvShow::public Show {
+class TvShow: public Show {
 private:
 	int seasonEpisodeRunTime[5][5];
 public:
-	TvShow()
-		void play() {
+	TvShow() {}
+	void play() {
 		int season;
 		int ep;
 		cout << "Enter episode number: ";
@@ -39,21 +40,21 @@ public:
 	void details() {
 		cout << "Title: " << title << endl;
 		cout << "Description: " << description << endl;
-		cout << "First episode runtime: " << seasonEpisodeRunTime[0][0]
+		cout << "First episode runtime: " << seasonEpisodeRunTime[0][0] << endl;
 	}
 public:
 
 };
 
-class Movie::public Show {
+class Movie:public Show {
 private:
 	string openingCredits;
 public:
 	string getCredits() { return openingCredits; }
 	void setCredits(string& c) { openingCredits = c; }
 	Movie() {};
-	Movie(t, d, c) { title = t; description = d; openingCredits = c; }
-	Movie(c) { openinngCredits = c; }
+	Movie(string t, string d, string c) : Show(t, d), openingCredits(c) {}
+	Movie(string c) : Movie("","",c) {}
 
 	void play() {
 		cout << "Title: " << title << endl;
