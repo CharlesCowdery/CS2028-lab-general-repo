@@ -6,7 +6,7 @@ class Measure {
     private:
         int little = 0;
         int lot = 0; // 7 littles
-        int heap = 0; // 23 lots
+        int heap = 0; // 23 lots, 161 littles
         void reflow();
     public:
         int allLittles();
