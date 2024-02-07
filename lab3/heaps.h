@@ -1,23 +1,31 @@
+#pragma once
+
+#include <string>
+
 class Measure {
     private:
-        int little;
-        int lot; // 7 littles
-        int heap; // 23 lots
-        void reflow(){};
-        int allLittles(){}
+        int little = 0;
+        int lot = 0; // 7 littles
+        int heap = 0; // 23 lots, 161 littles
+        void reflow();
     public:
-        Measure() {};
-        Measure(int littles) {};
-        Measure(int littles, int lots, int heaps) {};
+        int allLittles();
+        Measure();
+        Measure(int littles);
+        Measure(int littles, int lots, int heaps);
 
-        int getLittle() {};
-        int getLot() {};
-        int getHeap() {};
+        int getLittle();
+        int getLot();
+        int getHeap();
+
+        void setLittle(int v);
+        void setLot(int v);
+        void setHeap(int v);
 
         Measure operator+(Measure& right);
         Measure operator-(Measure& right);
         Measure operator*(Measure& right);
         Measure operator/(Measure& right);
         bool operator==(Measure& right);
-        void operator<<(); // operator -> string
+        operator std::string() const; // operator -> string
 };
