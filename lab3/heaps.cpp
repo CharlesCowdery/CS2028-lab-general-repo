@@ -69,6 +69,8 @@ bool Measure::operator ==(Measure& right) {
     return allLittles()==right.allLittles();
 };
 
+#hi
+
 
 
 
