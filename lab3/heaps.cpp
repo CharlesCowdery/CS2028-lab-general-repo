@@ -1,5 +1,5 @@
-#include "heaps.h";
-#include <string.h>
+#include "heaps.h"
+#include <iostream>
 
 int Measure::getLittle() { return little; };
 int Measure::getLot() { return lot; };
@@ -46,14 +46,19 @@ Measure Measure::operator *(Measure& right) {
     );
 };
 Measure Measure::operator /(Measure& right) {
+    int left_l = allLittles();
+    int right_l = right.allLittles();
     return Measure(
-        allLittles()/right.allLittles()
+        left_l/right_l
     );
 };
 bool Measure::operator ==(Measure& right) {
     return allLittles()==right.allLittles();
 };
-std::string Measure::operator <<() {
-    return little.to_string() + "/" + lot.to_string() + "/" + heap.to_string();
+Measure::operator std::string() const {
+    return std::to_string(little) + "/" + std::to_string(lot) + "/" + std::to_string(heap);
 }; // operator -> string
+
+
+
 
