@@ -5,6 +5,10 @@ int Measure::getLittle() { return little; };
 int Measure::getLot() { return lot; };
 int Measure::getHeap() { return heap; };
 
+void Measure::setLittle(int v) { little = v; }
+void Measure::setLot(int v) { lot = v; }
+void Measure::setHeap(int v) { heap = v; }
+
 Measure::Measure() :
     little(0), lot(0), heap(0) {};
 Measure::Measure(int littles) :

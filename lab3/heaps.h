@@ -18,6 +18,10 @@ class Measure {
         int getLot();
         int getHeap();
 
+        void setLittle(int v);
+        void setLot(int v);
+        void setHeap(int v);
+
         Measure operator+(Measure& right);
         Measure operator-(Measure& right);
         Measure operator*(Measure& right);
