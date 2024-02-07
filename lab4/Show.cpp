@@ -6,7 +6,7 @@ class Show {
 protected:
 	string title, description;
 public:
-	Show() : Show(0) {};
+	Show() : Show(0,"") {};
 	Show(string Title, string Description) : title(Title), description(Description) {}
 	string getTitle() { return title; }
 	string getDescription{ return description; }
