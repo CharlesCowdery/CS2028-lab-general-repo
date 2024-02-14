@@ -107,7 +107,7 @@ public:
 		int ep;
 		season = bounded_input<int>("Enter season number: ", "season number", 0xb1111, 1, seasonEpisodeRunTime.size());
 		ep = bounded_input<int>("Enter episode number: ","episode number", 0xb1111, 1, seasonEpisodeRunTime[0].size());
-		cout << "The run time is " << seasonEpisodeRunTime[season - 1][ep - 1] << " minutes" << endl;
+		cout << "The run time is " << seasonEpisodeRunTime[season - 1][ep - 1] << endl;
 	}
 	void details() {
 		cout << "Title: " << title << endl;

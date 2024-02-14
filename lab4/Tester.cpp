@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include "Show.cpp"
@@ -5,9 +7,48 @@
 using namespace std;
 
 // Function to test classes
-void testClasses(Show* show) {
+void testClasses(Show* show) { //self explanatory. calls the member functions related to show based objects
+    cout << endl;
+    cout << "*-details: " << endl;
     show->details();
+    cout << endl;
+    cout << "*-play: " << endl;
     show->play();
+    cout << endl;
+}
+
+Movie createMovie() { //handles user inputting for movie creation.
+    string title, description, credits;
+    title = validated_input_s("Enter title: ");
+    description = validated_input_s("Enter Description: ");
+    credits = validated_input_s("Enter opening credits: ");
+    Movie movie(title, description, credits);
+
+    return movie;
+}
+
+TvShow createTvShow() { //handles user inputting for TvShow creation.
+    string title, description;
+    vector<vector<int>> runtimes;
+
+    title = validated_input_s("Enter title: ");
+    description = validated_input_s("Enter Description: ");
+    int season_count = bounded_input<int>("how many seasons?: ", "season count", 0b1100, 0);
+    int episode_count = bounded_input<int>("how many episodes per season?: ", "episode count", 0b1100, 0);
+
+    runtimes.resize(season_count);//too lazy to push on the fly, so im just resizing to the correct size and bracket accessing
+    for (auto& season : runtimes) season.resize(episode_count);
+    for (int s = 0; s < season_count; s++) {
+        for (int e = 0; e < episode_count; e++) {
+            string prompt = "Enter the runtime of s" + to_string(s + 1) + "e" + to_string(e + 1) + ": "; //fetch each episode runtime
+            int length = bounded_input<int>(prompt, "runtime", 0b1100, 0);
+            runtimes[s][e] = length;
+        }
+    }
+
+    TvShow tvShow(title, description, runtimes);
+
+    return tvShow;
 }
 
 int main() {
@@ -19,63 +60,40 @@ int main() {
         cout << "Press 2 for an instance of TV Show." << endl;
         cout << "Press 3 for an instance of a MOVIE declared as a Show." << endl;
         cout << "Press 4 for an instance of a TV Show declared as a Show." << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
+        cout << "Press 5 to exit" << endl;
+        choice = bounded_input("Enter your choice: ", "selection", 0b1111, 1, 5);
+        cout << endl;
 
-        if (choice == 1) {
-            string title, description, credits;
-            cout << "Enter title: ";
-            cin.ignore();
-            getline(cin, title);
-            cout << "Enter description: ";
-            getline(cin, description);
-            cout << "Enter opening credits: ";
-            getline(cin, credits);
-            Movie movie(title, description, credits);
+        if (choice == 1) { //these are all straightforward implementations of the testing guidelines
+            cout << "testing MOVIE: " << endl;
+            Movie movie = createMovie();
             testClasses(&movie);
         }
         else if (choice == 2) {
-            string title, description;
-            cout << "Enter title: ";
-            cin.ignore();
-            getline(cin, title);
-            cout << "Enter description: ";
-            getline(cin, description);
-            TvShow tvShow;
-            tvShow.setTitle(title);
-            tvShow.setDescription(description);
+            cout << "testing TVSHOW: " << endl;
+            TvShow tvShow = createTvShow();
             testClasses(&tvShow);
         }
         else if (choice == 3) {
-            string credits;
-            cout << "Enter opening credits: ";
-            cin.ignore();
-            getline(cin, credits);
-            Show* movieAsShow = new Movie("", "", credits);
+            cout << "testing MOVIE as SHOW: " << endl;
+            Movie movie = createMovie();
+
+            Show* movieAsShow = &movie;
             testClasses(movieAsShow);
-            delete movieAsShow;
         }
         else if (choice == 4) {
-            string title, description;
-            cout << "Enter title: ";
-            cin.ignore();
-            getline(cin, title);
-            cout << "Enter description: ";
-            getline(cin, description);
-            Show* tvShowAsShow = new TvShow();
-            tvShowAsShow->setTitle(title);
-            tvShowAsShow->setDescription(description);
+            cout << "testing TVSHOW as SHOW: " << endl;
+            TvShow tvShow = createTvShow();
+            Show* tvShowAsShow = &tvShow;
             testClasses(tvShowAsShow);
-            delete tvShowAsShow;
-        }
-        else {
-            cout << "Invalid choice!" << endl;
         }
 
         cout << "Do you wish to continue testing? (Yes/No): ";
         string response;
         cin >> response;
-        if (response != "Yes") {
+        for (int i = 0; i < response.size(); i++)
+            response[i] = tolower(response[i]); //make response lowercase
+        if (response != "y") { //check just the first letter to account for people being lazy and going 'y'
             continueTesting = false;
         }
     }
