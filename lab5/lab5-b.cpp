@@ -62,8 +62,3 @@ public:
     void play() {
     }
 };
-
-int main() {
-    EntertainmentCollection<VideoGame> gameCollection;
-    return 0;
-}
