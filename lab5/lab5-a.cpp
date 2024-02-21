@@ -58,6 +58,7 @@ Movie createMovie() { //handles user inputting for movie creation.
     return movie;
 }
 // Tester
+
 int main() {
     bool cont = true;
     int userInput = 0;
@@ -68,16 +69,16 @@ int main() {
         cout << "(2) Remove movie from shelf" << endl;
         cout << "(3) See how many movies are in shelf" << endl;
         cout << "(4) quit" <<endl ;
-        userInput = bounded_input<int>("Which method would you like to invoke?:","input", 0b1111, 1, 4);
+        userInput = bounded_input<int>("Which method would you like to invoke?:","input", 0b1111, 1, 4); //get input. uses a helper function from show
         cout << endl;
         if (userInput == 1) {
             cout << "Movie details: --------------" << endl;
             auto m1 = createMovie();
             try { 
-            s1.add(m1);
-            cout << "Movie added. ----------------" << endl << endl;
+                s1.add(m1);
+                cout << "Movie added. ----------------" << endl << endl;
             }
-            catch (ShelfFull& e) {
+            catch (ShelfFull& e) {//error handling if shelf is full
                 cerr << e.what() << endl << endl;
             }
         }
@@ -89,7 +90,7 @@ int main() {
                 m.play();
                 cout << endl;
             }
-            catch (ShelfEmpty& e) {
+            catch (ShelfEmpty& e) { //error handling if shelf is empty
                 cerr << e.what() << endl << endl;
             }
         }
@@ -99,3 +100,4 @@ int main() {
         else { cont = false; }
     }
 }
+
