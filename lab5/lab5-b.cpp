@@ -1,5 +1,6 @@
 
 #include <stdexcept>
+#include <string>
 
 #define SIZE 5 //using a preprocessor directive for constant c type array size.
 //its what ive been taught personally, dunno how standard it is.
@@ -32,7 +33,7 @@ public:
         num -= 1;
         return collection[num];
     }
-    void add(t item) {
+    void add(const t& item) {
         if (num >= SIZE) { throw ShelfFull(); }
         for (int i = num; i > 0; i--) {
             collection[i] = collection[i - 1];
@@ -42,5 +43,22 @@ public:
     }
     int count() { 
         return num;
+    }
+};
+
+class VideoGame {
+private:
+    std::string title;
+    std::string genre;
+public:
+    VideoGame() : title(""), genre("") {}
+    VideoGame(const std::string& _title, const std::string& _genre) : title(_title), genre(_genre) {}
+    void setTitle(const std::string& _title) {
+        title = _title;
+    }
+    void setGenre(const std::string& _genre) {
+        genre = _genre;
+    }
+    void play() {
     }
 };
