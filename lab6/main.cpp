@@ -1,6 +1,8 @@
 #include "Queue.h"
 #include "Stack.h"
 #include <string>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 
@@ -85,23 +87,112 @@ template <typename t> t bounded_input(string prompt, string name, char flags, t 
 
 
 int main() {
-	Stack s1 = new Stack(100);
-	Queue q1 = new Queue(100);
-	// -> Stack... Implementation Try/Catch for overflow
-	
-	// Stack -> Queue -> Output
-	int j = s1.length();
-	for (int i = 0; i < j; i++) {
-		q1.enqueue(s1.pop());
+	while (true) {
+		cout << "Enter 1 to test using file.\nEnter 2 to test via cmd.\nEnter 3 to exit." << endl;
+		int choice = bounded_input("Enter input: ", "value", 0xb1111, 1, 3); //get user choice
+
+		if (choice == 1) {
+			try {
+				string fname;
+				fstream f;
+				while (true) { //file input and validation
+					fname = input_s("Enter filename: ");
+					f = fstream(fname, ios::in);
+					if (f.fail()) {
+						cout << "File not found." << endl;
+						continue;
+					}
+					break;
+				}
+				int size = 0;
+				string read_value; //getting the requisite allocation size of words.
+				while (!f.eof()) {
+					f >> read_value;
+					size++;
+				}
+				f.clear();//reset read position in file
+				f.seekg(0, ios::beg);
+
+				Queue<Stack<char>> words(size);
+				 
+				while (!f.eof()) { //actually read in file
+					f >> read_value;
+					auto s = new Stack<char>(read_value.size());
+					for (int i = 0; i < read_value.size(); i++) {
+						char c = read_value[i];
+						char* c_ptr = new char(c); //abomination. The pointer is 8x bigger than the data
+						s->push(c_ptr);
+					}
+					words.enqueue(s);
+				}
+
+				while (!words.isEmpty()) { //outputs the reversed words in order via the natural output of the queue of stacks.
+					auto s = words.dequeue();
+					while (!s->isEmpty()) {
+						auto c = s->pop();
+						string o = "";
+						o += *c;
+						cout << o;
+						delete c; //to make sure this ship doesnt leak memory like a sieve
+					}
+					cout << " ";
+					delete s;
+				}
+			}
+			catch (exception e) {
+				cout << e.what() << endl;
+			}
+
+		}
+		if (choice == 2) {
+			try {
+				string v = input_s("enter a string to reverse: ");
+				Queue<Stack<char>> words(10000); //too lazy to get the correct size, so big number that nobody will reasonably hit. If they do, guess they get the error
+				string word = "";
+				for (int i = 0; i < v.size(); i++) { //just basic string splitting
+					char c = v[i];
+					if (c == ' ') {
+						auto s = new Stack<char>(word.size());
+						for (auto c : word) {
+							auto c_ptr = new char(c);
+							s->push(c_ptr);
+						}
+						words.enqueue(s);
+						word = "";
+					}
+					else {
+						word += c;
+					}
+				}
+				if (word.size() > 0) {
+					auto s = new Stack<char>(word.size());
+					for (auto c : word) {
+						auto c_ptr = new char(c);
+						s->push(c_ptr);
+					}
+					words.enqueue(s);
+					word = "";
+				}
+
+				while (!words.isEmpty()) { //outputs the reversed words in order via the natural output of the queue of stacks.
+					auto s = words.dequeue();
+					while (!s->isEmpty()) {
+						auto c = s->pop();
+						string o = "";
+						o += *c;
+						cout << o;
+						delete c;
+					}
+					cout << " ";
+					delete s;
+				}
+				cout << endl;
+			}
+			catch (queueOverflow) {
+				cout << "Queue overflow! really not sure how you managed to enter 100000 spaces but good on you." << endl; //if you see this, you did something nasty.
+			}
+		}
+		if (choice == 3) break;
 	}
-	j = q1.sizeQueue();
-	for (int i = 0; i < j; i++) {
-		cout << &(q1.dequeue());
-	}
-	
-
-
-
-
 	return 0;
 }
