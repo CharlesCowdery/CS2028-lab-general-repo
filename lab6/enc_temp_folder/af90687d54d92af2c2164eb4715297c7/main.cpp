@@ -147,7 +147,7 @@ int main() {
 		if (choice == 2) {
 			try {
 				string v = input_s("enter a string to reverse: ");
-				Queue<Stack<char>> words(10000); //too lazy to get the correct size, so big number that nobody will reasonably hit. If they do, guess they get to see my error handling
+				Queue<Stack<char>> words(10000); //too lazy to get the correct size, so big number that nobody will reasonably hit. If they do, guess they get the error
 				string word = "";
 				for (int i = 0; i < v.size(); i++) { //just basic string splitting
 					char c = v[i];

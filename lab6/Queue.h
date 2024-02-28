@@ -18,7 +18,7 @@ public:
     }
 };
 
-template <typename T>
+template <typename T> 
 class Queue{
     private:
         T** data;
@@ -34,28 +34,31 @@ class Queue{
             delete[] data;
         }
 
-        void enqueue(T* item) {
+        void enqueue(T* item) { //adds item to queue
             if (num >= size) throw queueOverflow();
             data[num] = item;
             num++;
         }
-        T* dequeue() {
+        T* dequeue() { //removes and returns first item from queue
             if (num <= 0) throw queueUnderflow();
             T* out = data[0];
-            for (int i = 0; i < num; i++) {
+            for (int i = 0; i < num; i++) { //shuffling data after popping front. 
                 data[i] = data[i + 1];
             }
             num--;
             return out;
         }
-        T* peek() {
+        T* peek() { //returns first spot in queue
             if (num == 0) { throw queueUnderflow(); }
             return items[0];
         }
-        bool isEmpty() {
+        bool isEmpty() { //returns true if empty
             return num == 0;
         }
-        int sizeQueue() {
+        void empty() { //clears queue
+            num = 0;
+        }
+        int sizeQueue() {//returns queue size
             return num;
         }
 };

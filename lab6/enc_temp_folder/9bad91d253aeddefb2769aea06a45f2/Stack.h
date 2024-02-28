@@ -29,27 +29,30 @@ public:
 	~Stack() {
 		delete[] items;
 	}
-	void push(T* top) { //adds item to stack
+	void push(T* top) {
 		if (num >= size) { throw stackOverflow(); }
 		items[num] = top;
 		num++;
 	}
-	T* pop() { //returns and removes latest item from stack
+	T* pop() {
 		if (num <= 0) { throw stackUnderflow(); }
 		num--;
 		return items[num];
 	}
-	T* top() { //gets the latest item in the stack
+	T* top() {
 		if (num == 0) { throw stackUnderflow(); }
 		return items[num - 1]
 	}
-	int length() { //gets stack length
+	int length() {
 		return num;
 	}
-	bool isEmpty() { //checks if stack is empty
+	bool isEmpty() {
 		return num == 0;
 	}
-	void empty() { //clears stack contents
+	void empty() {
+		for (int i = num - 1; i >= 0; i--) {
+			delete items[i];
+		}
 		num = 0;
 	}
 };
