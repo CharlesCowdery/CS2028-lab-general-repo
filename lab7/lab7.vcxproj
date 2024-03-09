@@ -98,14 +98,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryList.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryList.h" />
     <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="SparseList.h" />
     <ClInclude Include="OrderedList.h" />
-    <ClInclude Include="SparseList-p.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

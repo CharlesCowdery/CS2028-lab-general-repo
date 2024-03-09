@@ -1,5 +1,5 @@
 #pragma once
-const int size = 25;
+#define SIZE 25
 template<typename T>
 
 class OrderedList {
@@ -9,7 +9,7 @@ protected:
 	int num;
 public:
 	/* Variables */
-	T* arr[size];
+	T* arr[SIZE];
 	
 
 	/* Methods */
@@ -21,32 +21,33 @@ public:
 	void addItem(T* item) {
 		if (isFull()) { throw listOverflow(); }
 		int pos = 0;
-		for (; pos < num; pos++) {
+		for (; pos < num; pos++) { //find pos
 			numCompare++;
-			if (*arr[pos] < *item) break;
+			if (*arr[pos] > *item) break;
 		}
-		if (pos == num) {
+		if (pos == num) { //add if at end
 			arr[pos] = item;
 		}
-		else {
+		else { //shift otherwise
 			for (int i = num; i > pos; i--) {
 				arr[i] = arr[i - 1];
 				numMove++;
 			}
 			arr[pos] = item;
 		}
+		num++;
 	}
 	void removeItem(T* item) {
 		if (isEmpty()) throw listUnderflow();
 
-		int pos = 0;
-		for (;pos < num; pos++) {
+		int pos = 0; 
+		for (;pos < num; pos++) { // find item
 			numCompare++;
 			if (*arr[pos] == *item) break;
 		}
 		if (pos == num) throw valueDNE();
 
-
+		delete arr[pos];
 		for (int i = pos; i < num - 1; ++i) {
 			arr[i] = arr[i + 1];
 			numMove++;
@@ -54,10 +55,10 @@ public:
 		num--;
 	}
 	bool isEmpty() {
-		return num;
+		return num == 0;
 	}
 	bool isFull() {
-		return num == size;
+		return num == SIZE;
 	}
 	int size() {
 		return num;
@@ -68,14 +69,12 @@ public:
 		numCompare = 0;
 	}
 	void print() {
-		for (int i = 0; i <= size; i++) {
-			std::cout << i << " ";
+		for (int i = 0; i < num; i++) {
+			std::cout << *arr[i] << " ";
 		}
-		std::cout << "\n";
-		for (int i = 0; i <= size; i++) {
-			if (arr[i] == nullptr) { std::cout << "X"; }
-			else { std::cout << *arr[i]; }
-			std::cout << " ";
-		}
+		cout << endl;
 	} // Useful for outputting current list
+	void printStats() {
+		cout << "comparisons: " << numCompare << " | moves: " << numMove << endl;
+	}
 };
