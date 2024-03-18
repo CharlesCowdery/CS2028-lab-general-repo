@@ -1,5 +1,5 @@
 #pragma once
-#define SIZE 25
+#define SIZE 75
 template<typename T>
 
 class OrderedList {

@@ -60,7 +60,6 @@ int main() {
 					try { OL.removeItem(k_p); }
 					catch (exception e) {}
 				}
-				delete k_p;
 			}
 		}
 		if (sel == 2) {
@@ -68,7 +67,7 @@ int main() {
 				SparseList<int> SL;
 				BinaryList<int> BL;
 				OrderedList<int> OL;
-				for (int i = 0; i < 25; i++) {
+				for (int i = 0; i < SIZE; i++) {
 					int k =  rand() % 100 + 1;
 					try { SL.addItem(new int(k));}
 					catch (exception e) {}
@@ -79,7 +78,7 @@ int main() {
 
 
 				}
-				for (int i = 0; i < 25; i++) {
+				for (int i = 0; i < SIZE; i++) {
 					int* k = new int(rand() % 100 + 1);
 					try { SL.removeItem(k); }
 					catch (exception e) {}
@@ -87,7 +86,6 @@ int main() {
 					catch (exception e) {}
 					try { OL.removeItem(k); }
 					catch (exception e) {}
-					delete k;
 
 
 				}
