@@ -48,8 +48,8 @@ public:
 
 class VideoGame {
 private:
-    std::string title;
-    std::string genre;
+    string title;
+    string genre;
 public:
     VideoGame() : title(""), genre("") {}
     VideoGame(const std::string& _title, const std::string& _genre) : title(_title), genre(_genre) {}
