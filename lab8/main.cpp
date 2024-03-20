@@ -13,6 +13,7 @@ void printMenu() {
         << "7. See Item at Location\n"
         << "8. Remove Next Item\n"
         << "9. Remove Previous Item\n"
+        << "10.Print List\n"
         << "0. Exit\n";
 }
 
@@ -126,6 +127,9 @@ int main() {
                 std::cerr << e.what() << std::endl;
             }
             break;
+        }
+        case 10: {
+            itemList.printList();
         }
         case 0:
             std::cout << "Exiting.\n";
