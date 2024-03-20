@@ -16,12 +16,12 @@ std::string ItemStock::getPartInfo() {
     return std::to_string(sku) + " " + description;
 }
 
-std::string ItemStock::getFancyInfo() {
+std::string ItemStock::getFancyInfo() { //prints out a fancier and more verbose description of an item
     std::stringstream SS;
     SS << "----------------" << endl;
     SS << "| SKU: " << sku << endl;
     SS << "| Description: " << description << endl;
-    SS << "| Price: $" << price << endl;
+    SS << "| Price: $" << getPrice() << endl;
     SS << "| Quantity: " << quantity << "pcs" << endl;
     SS << "| Lead time: " << leadTime << endl;
     SS << "+----------------" << endl;
