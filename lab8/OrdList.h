@@ -157,7 +157,7 @@ public:
         }
 
         Node<T>* temp = head;
-        for (int i = 1; i < location; i++) {
+        for (int i = 1; i < location; i++) {   //go until either item is foudn or exits list
             if (temp == nullptr) {
                 throw ListUnderflowException();
             }
