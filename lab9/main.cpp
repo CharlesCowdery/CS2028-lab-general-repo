@@ -3,9 +3,7 @@
 
 int main(){
     std::string userInput;
-    template class Node<int>;
-    template class BinaryTree<int>;
-    BinaryTree t = new BinaryTree();
+    BinaryTree<int> t = BinaryTree<int>();
     t.insert(10);
     t.insert(13);
     t.insert(8);
@@ -13,14 +11,24 @@ int main(){
     t.insert(11);
     t.insert(9);
     t.insert(7);
-    t.find(11);
-    t.find(0);
-    t.size();
-    std::cout << t.getAllAscending();
-    std::cout << t.remove(12);
-    std::cout << t.remove(9);
-    std::cout << t.getAllDecending();
+    std::cout << t.find(11) << std::endl;
+    std::cout << t.find(0) << std::endl;
+    int size = t.size();
+    std::cout << size << std::endl;
+    Node<int>** asc = t.getAllAscending();
+    Node<int>** dsc = t.getAllDescending();
+    for (int i = 0; i < size; i++) {
+        std::cout << asc[i]->to_string() << " ";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < size; i++) {
+        std::cout << dsc[i]->to_string() << " ";
+    }
+    std::cout << std::endl;
+    //std::cout << t.remove(12).to_string();
+    //std::cout << t.remove(9).to_string();
+    //std::cout << t.getAllDecending();
     t.emptyTree();
-    std::cout << t.getAllAscending();
+    //std::cout << t.getAllAscending();
     return 0;
 }

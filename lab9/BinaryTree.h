@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <math.h>
+#include <ostream>
 /* Exception Classes */
 class valueDNE : public std::exception {
 public:
@@ -39,21 +40,24 @@ template <typename T>
 class Node {
 public:
     T data;
-    Node* left;
-    Node* right;
+    Node<T>* left;
+    Node<T>* right;
 
-    Node(T data) {
+    Node(T _data) {
         left = nullptr;
         right = nullptr;
-        data = data;
+        data = _data;
     };
+    std::string to_string() {
+        return std::to_string(data);
+    }
 };
 
 /* Tree Class */
 template <typename T>
 class BinaryTree {
 public:
-    Node* root;
+    Node<T>* root = nullptr;
     BinaryTree() {}
     ~BinaryTree() {
         emptyTree();
@@ -86,44 +90,62 @@ public:
             throw repeatValue();
         }
     }
-    Node<T>* BinaryTree::find(T v, Node<T>* N = root) {
+    Node<T>* find(T v) {
+        return find(v, root);
+    }
+    Node<T>* find(T v, Node<T>* N) {
         if (N->data == v) return N; //if node is value return
         if (v > N->data && N->right != nullptr) return find(v, N->right);   //checks if child exists and searches down it if appropriate
         if (v < N->data && N->left != nullptr) return find(v, N->left);     
         return nullptr;
     };
-    Node<T>* BinaryTree::findParent(T v, Node<T>* N = root) {
+    Node<T>* findParent(T v) {
+        return findParent(root);
+    }
+    Node<T>* findParent(T v, Node<T>* N) {
         if (N->right != nullptr && N->right->data == v) return N; //checks if child has value, and returns self if so
         if (N->left  != nullptr && N->left->data  == v) return N; 
         if (v > N->data && N->right != nullptr) return findParent(v, N->right); //otherwise search down appropriate childs tree if it exists
         if (v < N->data && N->left  != nullptr) return findParent(v, N->left);
         return nullptr;
     };
-    int size(Node<T>* N = root) {
+    int size() {
+        return size(root);
+    }
+    int size(Node<T>* N) {
         if (N == nullptr) return 0;
-        return 1 + size(N->left) + size(N->right); //recurses down the tree, with each node adding one
+        return 1 + size(N->left) + size(N->right); //recurses down the tree, with each node adding one to size
     }
-    Node<T>*[] getAllAscending(Node<T>* N = root) {
-        Node<T> arr[] = new Node<T>*[size()];
-        int position = 0;
-        return getAllAscending(N, arr, position);
+    Node<T>** getAllAscending() {
+        return getAllAscending(root);
     }
-    void getAllAscending(Node<T>* N, Node<T>*[] & arr, int& position) {
-        if (N->left != nullptr) {
+    Node<T>** getAllAscending(Node<T>* N) {
+        Node<T>** arr = (Node<T>**) malloc(sizeof(Node<T>*)*size()); //init array
+        int position = 0; //init position increment variable
+        getAllAscending(N, arr, position);
+        return arr;
+    }
+    void getAllAscending(Node<T>* N, Node<T>** arr, int& position) {
+        if (N->left != nullptr) { //if left exists, add all nodes on left first
             getAllAscending(N->left, arr, position);
         }
-        arr[position] = N;
+        arr[position] = N; //then add self and increment
         position++;
-        if (N->right != nullptr) {
+        if (N->right != nullptr) { //if right exists add all nodes on right last
             getAllAscending(N->right, arr, position);
         }
     };
-    Node<T>*[] getAllDescending(Node<T>* N = root) {
-        Node<T> arr[] = new Node<T>*[size()];
-        int position = 0;
-        return getAllAscending(N, arr, position);
+    Node<T>** getAllDescending() {
+        return getAllDescending(root);
+
     }
-    void getAllDescending(Node<T>* N, Node<T>*[] & arr, int& position) {
+    Node<T>** getAllDescending(Node<T>* N) {
+        Node<T>** arr = (Node<T>**) malloc(sizeof(Node<T>*) * size()); //refer to ascending. Order of child traversal is reversed.
+        int position = 0;
+        getAllDescending(N, arr, position);
+        return arr;
+    }
+    void getAllDescending(Node<T>* N, Node<T>** arr, int& position) {
         if (N->right != nullptr) {
             getAllDescending(N->right, arr, position);
         }
@@ -133,12 +155,25 @@ public:
             getAllAscending(N->left, arr, position);
         }
     };
-    void emptyTree(Node<T>* N = root) {
+    int nodeHeight() {
+        return nodeHeight(root);
+    }
+    int nodeHeight(Node<T>* N) {
+        int height = 0;
+        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1);
+        if (N->right != nullptr) height = std::max(height, nodeHeight(N->right) + 1);
+        return height;
+    }
+    void emptyTree() {
+        emptyTree(root);
+    }
+    void emptyTree(Node<T>* N) {
+        if (N == nullptr) return;
         if (N->left  != nullptr) emptyTree(N->left);
         if (N->right != nullptr) emptyTree(N->right);
         delete N;
     }
-    Node* remove(T w) {
+    Node<T>* remove(T w) {
         Node<T>* parent = findParent(w); //get parent of value
         Node<T>** p_node_ptr;
         Node<T>* node;
@@ -200,14 +235,9 @@ public:
 
 
     }
-    int nodeHeight(Node<T>* N = root) {
-        int height = 0;
-        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1);
-        if (N->right != nullptr) height = std::max(height, nodeHeight(N->right) + 1);
-        return height;
-    }
+
     void rebalance();
-    void rotateRight(Node* N, Node* P);
-    void rotateLeft(Node* N, Node* P);
+    void rotateRight(Node<T>* N, Node<T>* P);
+    void rotateLeft(Node<T>* N, Node<T>* P);
 
 };
