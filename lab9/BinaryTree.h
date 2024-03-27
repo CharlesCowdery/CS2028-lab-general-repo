@@ -160,16 +160,16 @@ public:
     }
     int nodeHeight(Node<T>* N) {
         int height = 0;
-        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1);
-        if (N->right != nullptr) height = std::max(height, nodeHeight(N->right) + 1);
+        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1); 
+        if (N->right != nullptr) height = std::max(height, nodeHeight(N->right) + 1); // if right has more height it will override left
         return height;
     }
     void emptyTree() {
         emptyTree(root);
     }
     void emptyTree(Node<T>* N) {
-        if (N == nullptr) return;
-        if (N->left  != nullptr) emptyTree(N->left);
+        if (N == nullptr) return; //ensures repeat calls will not crash due to trying to deallocate a nullptr root
+        if (N->left  != nullptr) emptyTree(N->left);//empty children if they exists
         if (N->right != nullptr) emptyTree(N->right);
         delete N;
     }
@@ -222,7 +222,7 @@ public:
             }
             (*p_node_ptr) = target;
             int sec_size = size(secondary);
-            Node<T>*[] subnodes = getAllAscending(secondary); // liquify and reinsert children
+            Node<T>** subnodes = getAllAscending(secondary); // liquify and reinsert children
             for (int i = 0; i < sec_size; i++) {
                 Node* subnode = subnodes[i];
                 subnode->left = nullptr;
