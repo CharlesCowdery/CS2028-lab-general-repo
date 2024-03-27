@@ -9,6 +9,13 @@ public:
     }
 };
 
+class repeatValue : public std::exception {
+public:
+    const char* what() {
+        return "Value already in Tree";
+    }
+};
+
 /* Word Frequency Class */
 class Word {
 private:
@@ -52,48 +59,56 @@ public:
         emptyTree();
     }
 
-    void insert(T w) {
+    void insert(T w) { //inserts a node starting at tree root
+        Node<T>* w_node = new Node<T>(w);
         if (root == nullptr) {
-            root = new Node<T>(w);
+            root = w_node;
             return;
         }
         else {
-            insert(w, root);
+            insert(w_node, root);
         }
     }
-    void insert(T w, Node<T>* N) {
-        if (w > N->data) {
+    void insert(Node<T>* w, Node<T>* N) {
+        //checks which node path is appropriate, if it exists, it propogates the function down that path.
+        //Otherwise, it sets that child pointer to the node
+        //if it finds a node with value equal to the node were trying to insert, it errors out
+        if (w->data > N->data) { 
             if (N->right != nullptr) insert(w, N->right);
-            else N->right = new Node<T>(w);
+            else N->right = w;
         }
-        if (w < N->data) {
+        if (w->data < N->data) {
             if (N->left != nullptr) insert(w, N->left);
-            else N->left = new Node<T>(w);
+            else N->left = w;
+        }
+        if (w->data == N->data) {
+            delete w;
+            throw repeatValue();
         }
     }
     Node<T>* BinaryTree::find(T v, Node<T>* N = root) {
-        if (N->data == v) return N;
-        if (v > N->data && N->right != nullptr) return find(v, N->right);
-        if (v < N->data && N->left != nullptr) return find(v, N->left);
+        if (N->data == v) return N; //if node is value return
+        if (v > N->data && N->right != nullptr) return find(v, N->right);   //checks if child exists and searches down it if appropriate
+        if (v < N->data && N->left != nullptr) return find(v, N->left);     
         return nullptr;
     };
     Node<T>* BinaryTree::findParent(T v, Node<T>* N = root) {
-        if (N->right != nullptr && N->right->data == v) return N;
-        if (N->left  != nullptr && N->left->data  == v) return N;
-        if (v > N->data && N->right != nullptr) return findParent(v, N->right);
+        if (N->right != nullptr && N->right->data == v) return N; //checks if child has value, and returns self if so
+        if (N->left  != nullptr && N->left->data  == v) return N; 
+        if (v > N->data && N->right != nullptr) return findParent(v, N->right); //otherwise search down appropriate childs tree if it exists
         if (v < N->data && N->left  != nullptr) return findParent(v, N->left);
         return nullptr;
     };
     int size(Node<T>* N = root) {
         if (N == nullptr) return 0;
-        return 1 + size(N->left) + size(N->right);
+        return 1 + size(N->left) + size(N->right); //recurses down the tree, with each node adding one
     }
-    Node<T>[] getAllAscending() {
-        Node<T> arr[] = new Node<T>[size()];
+    Node<T>*[] getAllAscending(Node<T>* N = root) {
+        Node<T> arr[] = new Node<T>*[size()];
         int position = 0;
-        return getAllAscending(root, arr, position);
+        return getAllAscending(N, arr, position);
     }
-    void getAllAscending(Node<T>* N, Node[] & arr, int& position) {
+    void getAllAscending(Node<T>* N, Node<T>*[] & arr, int& position) {
         if (N->left != nullptr) {
             getAllAscending(N->left, arr, position);
         }
@@ -103,12 +118,12 @@ public:
             getAllAscending(N->right, arr, position);
         }
     };
-    Node<T>[] getAllDescending() {
-        Node<T> arr[] = new Node<T>[size()];
+    Node<T>*[] getAllDescending(Node<T>* N = root) {
+        Node<T> arr[] = new Node<T>*[size()];
         int position = 0;
-        return getAllAscending(root, arr, position);
+        return getAllAscending(N, arr, position);
     }
-    void getAllDescending(Node<T>* N, Node[] & arr, int& position) {
+    void getAllDescending(Node<T>* N, Node<T>*[] & arr, int& position) {
         if (N->right != nullptr) {
             getAllDescending(N->right, arr, position);
         }
@@ -129,10 +144,12 @@ public:
         Node<T>* node;
         Node<T>* n_left;
         Node<T>* n_right;
+        bool use_root = false;
         if (parent == nullptr) { //root value edge case
             if (root->data == w) {
                 node = root;
                 p_node_ptr = &root;
+                use_root = true;
             }
             else throw valueDNE();
         }
@@ -159,8 +176,27 @@ public:
         }
         if (n_left != nullptr && n_right != nullptr) {
             Node<T>* target;
-            Node<T>* 
+            Node<T>* secondary;
+            if (size(n_left) > size(n_right)) {
+                target = n_left;
+                secondary = n_right;
+            }
+            else {
+                target = n_right;
+                seconday = n_left;
+            }
+            (*p_node_ptr) = target;
+            int sec_size = size(secondary);
+            Node<T>*[] subnodes = getAllAscending(secondary); // liquify and reinsert children
+            for (int i = 0; i < sec_size; i++) {
+                Node* subnode = subnodes[i];
+                subnode->left = nullptr;
+                subnode->right = nullptr;
+                if (use_root) insert(subnode, root);
+                else insert(subnode, parent);
+            }
         }
+        return node;
 
 
     }
