@@ -157,6 +157,10 @@ public:
         if (n_left != nullptr && n_right == nullptr) {
             (*p_node_ptr) = n_left;
         }
+        if (n_left != nullptr && n_right != nullptr) {
+            Node<T>* target;
+            Node<T>* 
+        }
 
 
     }
