@@ -19,12 +19,12 @@ public:
 };
 
 /* Word Frequency Class */
-class Word {
-private:
+class Word {  
+public:
     std::string word;
     int size;
     int count;
-public:
+
     Word(std::string w) {
         for (int i = 0; i < w.size(); i++) {
             w[i] = tolower(w[i]);
