@@ -140,16 +140,6 @@ public:
         if (v < N->data && N->left != nullptr) return find(v, N->left);     
         return nullptr;
     };
-    Node<T>* findParent(T v) {
-        return findParent(root);
-    }
-    Node<T>* findParent(T v, Node<T>* N) {
-        if (N->right != nullptr && N->right->data == v) return N; //checks if child has value, and returns self if so
-        if (N->left  != nullptr && N->left->data  == v) return N; 
-        if (v > N->data && N->right != nullptr) return findParent(v, N->right); //otherwise search down appropriate childs tree if it exists
-        if (v < N->data && N->left  != nullptr) return findParent(v, N->left);
-        return nullptr;
-    };
     int size() {
         return size(root);
     }
@@ -214,13 +204,98 @@ public:
         if (N->right != nullptr) emptyTree(N->right);
         delete N;
     }
+    Node<T>** swap_next(Node<T>** socket, Node<T>** here) {
+        if ((*here)->left == nullptr) {
+            Node<T>* temp = *here;
+            *here = *socket;
+            *socket = *here;
+            return here;
+        }
+        else {
+            return swap_next(socket, &((*here)->left));
+            
+        }
+    }
+    Node<T>** swap_prev(Node<T>** socket, Node<T>* here) {
+        if ((*here)->right == nullptr) {
+            Node<T>* temp = *here;
+            *here = *socket;
+            *socket = *here;
+            return here;
+        }
+        else {
+            return swap_prev(socket, &((*here)->right));
+        }
+    }
     Node<T>* remove(T w) {
-        remove(T, &root);
+        if (root->data == w) {
+            Node<T>* t = root;
+            if (root->left == nullptr) {
+                root = root->right;
+                rebalance()
+                return t;
+            }
+            if (root->right == nullptr) {
+                root = root->left;
+                rebalance();
+                return t;
+            }
+            Node<T>** final_spot = swap_next(&root, &(root->right));
+            (*final_spot) = nullptr;
+            return t;
+        }
+        remove(w, &root);
     }
     Node<T>* remove(T w, Node<T>** socket) {
-
+        Node<T>* N = *socket;
+        Node<T>** t_socket;
+        Node<T>** alt_socket;
+        bool found = false;
+        if (N->left != nullptr && N->left->data == w) {
+            Node<T>* t = N->left;
+            t_socket = &(N->left);
+            if ((*t_socket)->left == nullptr) {
+                (*t_socket) = (*t_socket)->right;
+                rebalance(socket);
+                return t;
+            }
+            if ((*t_socket)->right == nullptr) {
+                (*t_socket) = (*t_socket)->left;
+                rebalance(socket);
+                return t;
+            }
+            Node<T>** final_spot = swap_next(t_socket, &((*t_socket)->right));
+            (*final_spot) = nullptr;
+            return t;
+        }
+        if (N->right != nullptr && N->right->data == w) {
+            Node<T>* t = N->right;
+            t_socket = &(N->right);
+            if ((*t_socket)->left == nullptr) {
+                (*t_socket) = (*t_socket)->right;
+                rebalance(socket);
+                return t;
+            }
+            if ((*t_socket)->right == nullptr) {
+                (*t_socket) = (*t_socket)->left;
+                rebalance(socket);
+                return t;
+            }
+            Node<T>** final_spot = swap_next(t_socket, &((*t_socket)->right));
+            (*final_spot) = nullptr;
+            return t;
+        }
+        if (w < (*socket)->data) {
+            remove(w, &((*socket)->left));
+        }
+        if (w > (*socket)->data) {
+            remove(w, &((*socket)->right));
+        }
+        throw valueDNE();
     }
-
+    void rebalance() {
+        rebalance(&root);
+    }
     void rebalance(Node<T>** socket) {
         bool cont = true;
         while (cont == true) {
