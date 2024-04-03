@@ -2,6 +2,7 @@
 #include <string>
 #include <math.h>
 #include <ostream>
+#include <ctype.h>
 /* Exception Classes */
 class valueDNE : public std::exception {
 public:
@@ -21,18 +22,57 @@ public:
 class Word {
 private:
     std::string word;
+    int size;
     int count;
 public:
-    Word(std::string w);
-    void add();
+    Word(std::string w) {
+        for (int i = 0; i < w.size(); i++) {
+            w[i] = tolower(w[i]);
+        }
+        word = w;
+        size = w.size();
+        count = 1;
+    }
 
-    std::string lowercase(std::string w);
+    void inc() {
+        count++;
+    }
 
-    bool operator >(Word& right);
-    bool operator <(Word& right);
-    bool operator ==(Word& right);
-    bool operator >=(Word& right);
-    bool operator <=(Word& right);
+    char operator[](int v) {
+        return word[v];
+    }
+    bool operator >(Word& right) {
+        int index = 0;
+        int min = std::min(right.size, size);
+        while (index < min) {
+            char c1 = word[index];
+            char c2 = right[index];
+            if (c1 > c2) return true;
+            if (c2 > c1) return false;
+        }
+        return false;
+    }
+    bool operator <(Word& right) {
+        int index = 0;
+        int min = std::min(right.size, size);
+        while (index < min) {
+            char c1 = word[index];
+            char c2 = right[index];
+            if (c1 < c2) return true;
+            if (c2 < c1) return false;
+        }
+        return false;
+    }
+    bool operator ==(Word& right) {
+        int index = 0;
+        if (size != right.size) return false;
+        while (index < size) {
+            char c1 = word[index];
+            char c2 = right[index];
+            if (c2 != c1) return false;
+        }
+        return true;
+    }
 };
 
 /* Node Class */
@@ -72,6 +112,7 @@ public:
         else {
             insert(w_node, root);
         }
+        rebalance(&root);
     }
     void insert(Node<T>* w, Node<T>* N) {
         //checks which node path is appropriate, if it exists, it propogates the function down that path.
@@ -174,70 +215,49 @@ public:
         delete N;
     }
     Node<T>* remove(T w) {
-        Node<T>* parent = findParent(w); //get parent of value
-        Node<T>** p_node_ptr;
-        Node<T>* node;
-        Node<T>* n_left;
-        Node<T>* n_right;
-        bool use_root = false;
-        if (parent == nullptr) { //root value edge case
-            if (root->data == w) {
-                node = root;
-                p_node_ptr = &root;
-                use_root = true;
-            }
-            else throw valueDNE();
-        }
-        else {
-            if (parent->left != nullptr && parent->left->data == w) {
-                node = parent->left;
-                p_node_ptr = &(parent->left);
-            }
-            if (parent->right != nullptr && parent->right->data == w) {
-                node = parent->right;
-                p_node_ptr = &(parent->right);
-            }
-        }
-        n_left = node->left;
-        n_right = node->right;
-        if (n_left == nullptr && n_right == nullptr) {
-           (*p_node_ptr) = nullptr;
-        }
-        if (n_left == nullptr && n_right != nullptr) {
-            (*p_node_ptr) = n_right;
-        }
-        if (n_left != nullptr && n_right == nullptr) {
-            (*p_node_ptr) = n_left;
-        }
-        if (n_left != nullptr && n_right != nullptr) {
-            Node<T>* target;
-            Node<T>* secondary;
-            if (size(n_left) > size(n_right)) {
-                target = n_left;
-                secondary = n_right;
-            }
-            else {
-                target = n_right;
-                seconday = n_left;
-            }
-            (*p_node_ptr) = target;
-            int sec_size = size(secondary);
-            Node<T>** subnodes = getAllAscending(secondary); // liquify and reinsert children
-            for (int i = 0; i < sec_size; i++) {
-                Node* subnode = subnodes[i];
-                subnode->left = nullptr;
-                subnode->right = nullptr;
-                if (use_root) insert(subnode, root);
-                else insert(subnode, parent);
-            }
-        }
-        return node;
-
+        remove(T, &root);
+    }
+    Node<T>* remove(T w, Node<T>** socket) {
 
     }
 
-    void rebalance();
-    void rotateRight(Node<T>* N, Node<T>* P);
-    void rotateLeft(Node<T>* N, Node<T>* P);
+    void rebalance(Node<T>** socket) {
+        bool cont = true;
+        while (cont == true) {
+            cont = false;
+            Node<T>* node = *socket;
+            bool l_exist = node->left != nullptr;
+            bool r_exist = node->right != nullptr;
+            int dl = -1;
+            int dr = -1;
+
+            if (l_exist) rebalance(&(node->left));
+            if (r_exist) rebalance(&(node->right));
+            if (l_exist) dl = nodeHeight(node->left);
+            if (r_exist) dr = nodeHeight(node->right);
+            while (dr - dl > 1) {
+                rotateLeft(node, socket);
+                dl++;
+                dr--;
+                cont = true;
+            }
+            while (dl - dr > 1) {
+                rotateRight(node, socket);
+                dl--;
+                dr++;
+                cont = true;
+            }
+        }
+    }
+    void rotateRight(Node<T>* N, Node<T>** socket) {
+        (*socket) = N->left;
+        N->left = N->left->right;
+        (*socket)->right = N;
+    }
+    void rotateLeft(Node<T>* N, Node<T>** socket) {
+        (*socket) = N->right;
+        N->right = N->right->left;
+        (*socket)->left = N;
+    }
 
 };
