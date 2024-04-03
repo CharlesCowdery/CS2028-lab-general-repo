@@ -232,7 +232,7 @@ public:
             Node<T>* t = root;
             if (root->left == nullptr) {
                 root = root->right;
-                rebalance()
+                rebalance();
                 return t;
             }
             if (root->right == nullptr) {
