@@ -233,14 +233,27 @@ public:
 
         }
     }
-    int remove(T w) {
-        return remove(w, &root);
+    Node<T>** swap_prev(Node<T>** socket, Node<T>* here) {
+        if ((*here)->right == nullptr) {
+            Node<T>* temp = *here;
+            *here = *socket;
+            *socket = *here;
+            return here;
+        }
+        else {
+            return swap_prev(socket, &((*here)->right));
+        }
     }
-    int remove(T w, Node<T>** socket) {
-        if ((*socket)->data == w) {
-            Node<T>* t = (*socket);
-            if ((*socket)->left == nullptr) {
-                (*socket) = (*socket)->right;
+    Node<T>* remove(T w) {
+        if (root->data == w) {
+            Node<T>* t = root;
+            if (root->left == nullptr) {
+                root = root->right;
+                rebalance()
+                return t;
+            }
+            if (root->right == nullptr) {
+                root = root->left;
                 rebalance();
                 return 1;
             }
