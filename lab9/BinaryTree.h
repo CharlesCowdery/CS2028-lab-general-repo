@@ -19,12 +19,16 @@ public:
 };
 
 /* Word Frequency Class */
-class Word {  
+class Word {
 public:
     std::string word;
     int size;
     int count;
 
+    Word() {
+        word = "";
+        size = 0;
+    }
     Word(std::string w) {
         for (int i = 0; i < w.size(); i++) {
             w[i] = tolower(w[i]);
@@ -49,6 +53,7 @@ public:
             char c2 = right[index];
             if (c1 > c2) return true;
             if (c2 > c1) return false;
+            index++;
         }
         return false;
     }
@@ -60,6 +65,7 @@ public:
             char c2 = right[index];
             if (c1 < c2) return true;
             if (c2 < c1) return false;
+            index++;
         }
         return false;
     }
@@ -70,6 +76,7 @@ public:
             char c1 = word[index];
             char c2 = right[index];
             if (c2 != c1) return false;
+            index++;
         }
         return true;
     }
@@ -103,27 +110,27 @@ public:
         emptyTree();
     }
 
-    void insert(T w) { //inserts a node starting at tree root
+    int insert(T w) { //inserts a node starting at tree root
         Node<T>* w_node = new Node<T>(w);
         if (root == nullptr) {
             root = w_node;
             return;
         }
         else {
-            insert(w_node, root);
+            return 1 + insert(w_node, root);
         }
         rebalance(&root);
     }
-    void insert(Node<T>* w, Node<T>* N) {
+    int insert(Node<T>* w, Node<T>* N) {
         //checks which node path is appropriate, if it exists, it propogates the function down that path.
         //Otherwise, it sets that child pointer to the node
         //if it finds a node with value equal to the node were trying to insert, it errors out
-        if (w->data > N->data) { 
-            if (N->right != nullptr) insert(w, N->right);
+        if (w->data > N->data) {
+            if (N->right != nullptr) return 1 + insert(w, N->right);
             else N->right = w;
         }
         if (w->data < N->data) {
-            if (N->left != nullptr) insert(w, N->left);
+            if (N->left != nullptr) return 1 + insert(w, N->left);
             else N->left = w;
         }
         if (w->data == N->data) {
@@ -132,12 +139,13 @@ public:
         }
     }
     Node<T>* find(T v) {
+        if (root == nullptr) return nullptr;
         return find(v, root);
     }
     Node<T>* find(T v, Node<T>* N) {
         if (N->data == v) return N; //if node is value return
         if (v > N->data && N->right != nullptr) return find(v, N->right);   //checks if child exists and searches down it if appropriate
-        if (v < N->data && N->left != nullptr) return find(v, N->left);     
+        if (v < N->data && N->left != nullptr) return find(v, N->left);
         return nullptr;
     };
     int size() {
@@ -151,8 +159,9 @@ public:
         return getAllAscending(root);
     }
     Node<T>** getAllAscending(Node<T>* N) {
-        Node<T>** arr = (Node<T>**) malloc(sizeof(Node<T>*)*size()); //init array
+        Node<T>** arr = (Node<T>**) malloc(sizeof(Node<T>*) * size()); //init array
         int position = 0; //init position increment variable
+        if (root == nullptr) return arr;
         getAllAscending(N, arr, position);
         return arr;
     }
@@ -173,6 +182,7 @@ public:
     Node<T>** getAllDescending(Node<T>* N) {
         Node<T>** arr = (Node<T>**) malloc(sizeof(Node<T>*) * size()); //refer to ascending. Order of child traversal is reversed.
         int position = 0;
+        if (root == nullptr) return arr;
         getAllDescending(N, arr, position);
         return arr;
     }
@@ -191,110 +201,67 @@ public:
     }
     int nodeHeight(Node<T>* N) {
         int height = 0;
-        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1); 
+        if (N == nullptr) return -1;
+        if (N->left != nullptr) height = std::max(height, nodeHeight(N->left) + 1);
         if (N->right != nullptr) height = std::max(height, nodeHeight(N->right) + 1); // if right has more height it will override left
         return height;
     }
     void emptyTree() {
-        emptyTree(root);
+        emptyTree(&root);
     }
-    void emptyTree(Node<T>* N) {
+    void emptyTree(Node<T>** N) {
         if (N == nullptr) return; //ensures repeat calls will not crash due to trying to deallocate a nullptr root
-        if (N->left  != nullptr) emptyTree(N->left);//empty children if they exists
-        if (N->right != nullptr) emptyTree(N->right);
-        delete N;
+        if ((*N)->left != nullptr) emptyTree(&((*N)->left));//empty children if they exists
+        if ((*N)->right != nullptr) emptyTree(&((*N)->right));
+        delete* N;
+        (*N) = nullptr;
     }
     Node<T>** swap_next(Node<T>** socket, Node<T>** here) {
         if ((*here)->left == nullptr) {
             Node<T>* temp = *here;
+            Node<T>* t_socket = *socket;
+            Node<T>* temp_c = temp->right;
             *here = *socket;
-            *socket = *here;
+            *socket = temp;
+            (*socket)->left = t_socket->left;
+            (*socket)->right = t_socket->right;
+            (*here)->right = temp_c;
             return here;
         }
         else {
             return swap_next(socket, &((*here)->left));
-            
+
         }
     }
-    Node<T>** swap_prev(Node<T>** socket, Node<T>* here) {
-        if ((*here)->right == nullptr) {
-            Node<T>* temp = *here;
-            *here = *socket;
-            *socket = *here;
-            return here;
-        }
-        else {
-            return swap_prev(socket, &((*here)->right));
-        }
+    int remove(T w) {
+        return remove(w, &root);
     }
-    Node<T>* remove(T w) {
-        if (root->data == w) {
-            Node<T>* t = root;
-            if (root->left == nullptr) {
-                root = root->right;
-                rebalance()
-                return t;
-            }
-            if (root->right == nullptr) {
-                root = root->left;
+    int remove(T w, Node<T>** socket) {
+        if ((*socket)->data == w) {
+            Node<T>* t = (*socket);
+            if ((*socket)->left == nullptr) {
+                (*socket) = (*socket)->right;
                 rebalance();
-                return t;
+                return 1;
             }
-            Node<T>** final_spot = swap_next(&root, &(root->right));
-            (*final_spot) = nullptr;
-            return t;
-        }
-        remove(w, &root);
-    }
-    Node<T>* remove(T w, Node<T>** socket) {
-        Node<T>* N = *socket;
-        Node<T>** t_socket;
-        Node<T>** alt_socket;
-        bool found = false;
-        if (N->left != nullptr && N->left->data == w) {
-            Node<T>* t = N->left;
-            t_socket = &(N->left);
-            if ((*t_socket)->left == nullptr) {
-                (*t_socket) = (*t_socket)->right;
-                rebalance(socket);
-                return t;
+            if ((*socket)->right == nullptr) {
+                (*socket) = (*socket)->left;
+                rebalance();
+                return 1;
             }
-            if ((*t_socket)->right == nullptr) {
-                (*t_socket) = (*t_socket)->left;
-                rebalance(socket);
-                return t;
-            }
-            Node<T>** final_spot = swap_next(t_socket, &((*t_socket)->right));
-            (*final_spot) = nullptr;
-            return t;
+            Node<T>** final_spot = swap_next(socket, &((*socket)->right));
+
+            (*final_spot) = (*final_spot)->right;
+            return 1;
         }
-        if (N->right != nullptr && N->right->data == w) {
-            Node<T>* t = N->right;
-            t_socket = &(N->right);
-            if ((*t_socket)->left == nullptr) {
-                (*t_socket) = (*t_socket)->right;
-                rebalance(socket);
-                return t;
-            }
-            if ((*t_socket)->right == nullptr) {
-                (*t_socket) = (*t_socket)->left;
-                rebalance(socket);
-                return t;
-            }
-            Node<T>** final_spot = swap_next(t_socket, &((*t_socket)->right));
-            (*final_spot) = nullptr;
-            return t;
-        }
-        if (w < (*socket)->data) {
-            remove(w, &((*socket)->left));
-        }
-        if (w > (*socket)->data) {
-            remove(w, &((*socket)->right));
-        }
-        throw valueDNE();
+        if (w > (*socket)->data) 1+remove(w, &((*socket)->right));
+        if (w < (*socket)->data) 1+remove(w, &((*socket)->left));
     }
     void rebalance() {
         rebalance(&root);
+    }
+    int bf(Node<T>* N) {
+        return nodeHeight(N->left) - nodeHeight(N->right);
     }
     void rebalance(Node<T>** socket) {
         bool cont = true;
@@ -303,35 +270,56 @@ public:
             Node<T>* node = *socket;
             bool l_exist = node->left != nullptr;
             bool r_exist = node->right != nullptr;
-            int dl = -1;
-            int dr = -1;
 
             if (l_exist) rebalance(&(node->left));
             if (r_exist) rebalance(&(node->right));
-            if (l_exist) dl = nodeHeight(node->left);
-            if (r_exist) dr = nodeHeight(node->right);
+            int dl = nodeHeight(node->left);
+            int dr = nodeHeight(node->right);
             while (dr - dl > 1) {
                 rotateLeft(node, socket);
-                dl++;
-                dr--;
+                dl = nodeHeight((*socket)->left);
+                dr = nodeHeight((*socket)->right);
                 cont = true;
             }
             while (dl - dr > 1) {
                 rotateRight(node, socket);
-                dl--;
-                dr++;
+                dl = nodeHeight((*socket)->left);
+                dr = nodeHeight((*socket)->right);
                 cont = true;
             }
         }
     }
     void rotateRight(Node<T>* N, Node<T>** socket) {
+        if (N->left->right != nullptr) {
+            if (N->left->left == nullptr || nodeHeight(N->left->left) < nodeHeight(N->left->right)) {
+                rotateLeft(N->left, &(N->left));
+                return;
+            }
+        }
         (*socket) = N->left;
-        N->left = N->left->right;
+        N->left = nullptr;
+        if ((*socket)->right == nullptr) {
+            (*socket)->right = N;
+            return;
+        }
+
+        N->left = (*socket)->right;
         (*socket)->right = N;
     }
     void rotateLeft(Node<T>* N, Node<T>** socket) {
+        if (N->right->left != nullptr) {
+            if (N->right->right == nullptr || nodeHeight(N->right->right) < nodeHeight(N->right->left)) {
+                rotateRight(N->right, &(N->right));
+                return;
+            }
+        }
         (*socket) = N->right;
-        N->right = N->right->left;
+        N->right = nullptr;
+        if ((*socket)->left == nullptr) {
+            (*socket)->left = N;
+            return;
+        }
+        N->right = (*socket)->left;
         (*socket)->left = N;
     }
 

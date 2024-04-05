@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "BinaryTree.h"
+#include <random>
 
 void readWordsFromFile(const std::string& filename, BinaryTree<Word>& tree) {
     std::ifstream file(filename);
@@ -38,6 +39,21 @@ void displayMenu() {
 }
 
 int main(){
+    BinaryTree<int> nums;
+
+    //test
+    for (int i = 0; i < 1000;i++) {
+        int k = rand() % 1000;
+        //std::cout << "inserting " << k ;
+        try {
+            nums.insert(k);
+        }
+        catch (std::exception e) {
+
+        }
+        std::cout << " " << std::endl;
+    }
+
     BinaryTree<Word> tree;
 
     std::string filename = "input.txt"; // Change this to your input file name
@@ -65,7 +81,7 @@ int main(){
         case 2: {
             Node<Word>** ascArr = tree.getAllAscending();
             for (int i = 0; i < tree.size(); ++i) {
-                std::cout << ascArr[i]->data.word << " (" << ascArr[i]->data.count << "), ";
+                std::cout << ascArr[i]->data.word << " (" << ascArr[i]->data.count << "," << tree.nodeHeight(ascArr[i]) << "," << tree.bf(ascArr[i]) << "), ";
             }
             std::cout << std::endl;
             free(ascArr);
@@ -74,7 +90,7 @@ int main(){
         case 3: {
             Node<Word>** descArr = tree.getAllDescending();
             for (int i = 0; i < tree.size(); ++i) {
-                std::cout << descArr[i]->data.word << " (" << descArr[i]->data.count << "), ";
+                std::cout << descArr[i]->data.word << " (" << descArr[i]->data.count << "," << tree.nodeHeight(descArr[i]) << "," << tree.bf(descArr[i]) << "), ";
             }
             std::cout << std::endl;
             free(descArr);
