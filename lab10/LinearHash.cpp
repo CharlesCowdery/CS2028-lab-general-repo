@@ -1,36 +1,52 @@
 #include "LinearHash.h"
 
-void LinearHash::empty() {
-	for (int i = 0; i < size; i++) {
-		data[i] = NULL;
-	}
+template <typename T>
+int LinearHash<T>::size = 100;
+
+template <typename T>
+void LinearHash<T>::empty() {
+    for (int i = 0; i < size; i++) {
+        data[i] = nullptr;
+        status[i] = 0;
+    }
 }
 
-LinearHash::LinearHash() {
-	size = 100;
-	data = new T [max_size]();
-	empty();
+template <typename T>
+LinearHash<T>::LinearHash() {
+    data = new T * [size];
+    status = new int[size];
+    empty();
 }
 
-LinearHash::LinearHash(int s) {
-	size = s;
-	data = new T data[size];
-	empty();
+template <typename T>
+LinearHash<T>::LinearHash(int s) {
+    size = s;
+    data = new T * [size];
+    status = new int[size];
+    empty();
 }
 
-int LinearHash::hash(std::string val) {
-	int total = 0;
-	for (char i : val) {
-		total += int(i);
-	}
-	return total % size;
+template <typename T>
+LinearHash<T>::~LinearHash() {
+    delete[] data;
+    delete[] status;
 }
 
-void LinearHash::AddItem(T* val) {
-    int index = hash(val);
+template <typename T>
+int LinearHash<T>::hash(std::string val) {
+    int total = 0;
+    for (char i : val) {
+        total += int(i);
+    }
+    return total % size;
+}
+
+template <typename T>
+void LinearHash<T>::AddItem(T* val) {
+    int index = hash(*val);
     int original_index = index;
-    while (status[index] == 2) {
-        index = (index + 1) % max_size;
+    while (status[index] == 1) {
+        index = (index + 1) % size;
         if (index == original_index) {
             return;
         }
@@ -39,18 +55,23 @@ void LinearHash::AddItem(T* val) {
     status[index] = 1;
 }
 
-int LinearHash::GetLength() {
-	return size;
+template <typename T>
+int LinearHash<T>::GetLength() {
+    return size;
 }
 
-T* LinearHash::GetItem(T* val) {
-	if (data[hash(*val)] == *val) {
-		return &data[hash(*val)];
-	}
-	for (int i = 1; data[hash(*val) + i] != NULL; i++) {
-		if (data[hash(*val) + i] == *val) {
-			return &data[hash(*val) + i];
-		}
-	}
-	return nullptr;
+template <typename T>
+T* LinearHash<T>::GetItem(T* val) {
+    int index = hash(*val);
+    int original_index = index;
+    while (status[index] != 0) {
+        if (status[index] == 1 && *data[index] == *val) {
+            return data[index];
+        }
+        index = (index + 1) % size;
+        if (index == original_index) {
+            return nullptr;
+        }
+    }
+    return nullptr;
 }
