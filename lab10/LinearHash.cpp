@@ -91,5 +91,3 @@ template<typename T>
 int LinearHash<T>::GetLength() {
     return size;
 }
-
-template class LinearHash<ItemStock>;

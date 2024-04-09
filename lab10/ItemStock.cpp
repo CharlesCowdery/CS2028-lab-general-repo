@@ -1,8 +1,6 @@
 #include "ItemStock.h"
 #include <sstream>
 
-using namespace std;
-
 ItemStock::ItemStock(int Sku, std::string Description, double Price, std::string Uom, double Quantity, double LeadTime) {
     sku = Sku;
     description = Description;
@@ -16,15 +14,15 @@ std::string ItemStock::getPartInfo() {
     return std::to_string(sku) + " " + description;
 }
 
-std::string ItemStock::getFancyInfo() { //prints out a fancier and more verbose description of an item
+std::string ItemStock::getFancyInfo() {
     std::stringstream SS;
-    SS << "----------------" << endl;
-    SS << "| SKU: " << sku << endl;
-    SS << "| Description: " << description << endl;
-    SS << "| Price: $" << getPrice() << endl;
-    SS << "| Quantity: " << quantity << "pcs" << endl;
-    SS << "| Lead time: " << leadTime << endl;
-    SS << "+----------------" << endl;
+    SS << "----------------" << std::endl;
+    SS << "| SKU: " << sku << std::endl;
+    SS << "| Description: " << description << std::endl;
+    SS << "| Price: $" << getPrice() << std::endl;
+    SS << "| Quantity: " << quantity << " pcs" << std::endl;
+    SS << "| Lead time: " << leadTime << std::endl;
+    SS << "+----------------" << std::endl;
     return SS.str();
 }
 

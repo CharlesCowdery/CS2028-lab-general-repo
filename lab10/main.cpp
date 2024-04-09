@@ -1,24 +1,18 @@
 #include <iostream>
-#include "OrdList.h"
+#include "LinearHash.h"
 #include "ItemStock.h"
 
 void printMenu() {
     std::cout << "\nMenu:\n"
         << "1. Add Item\n"
-        << "2. Check if Item is in List\n"
-        << "3. Check if List is Empty\n"
-        << "4. Get Size of List\n"
-        << "5. See Next Item\n"
-        << "6. See Previous Item\n"
-        << "7. See Item at Location\n"
-        << "8. Remove Next Item\n"
-        << "9. Remove Previous Item\n"
-        << "10.Print List\n"
-        << "0. Exit\n";
+        << "2. Remove Item\n"
+        << "3. Get Item\n"
+        << "4. Get Length\n"
+        << "5. Exit\n";
 }
 
 int main() {
-    OrdList<ItemStock> itemList;
+    LinearHash<ItemStock> hashTable(10);
 
     int choice;
     do {
@@ -47,97 +41,54 @@ int main() {
             std::cin >> quantity;
 
             ItemStock newItem(sku, description, price, uom, quantity, leadTime);
-            itemList.addItem(newItem);
+            try {
+                hashTable.AddItem(&newItem);
+                std::cout << "Item added to the hash table.\n";
+            }
+            catch (const std::runtime_error& e) {
+                std::cerr << e.what() << std::endl;
+            }
             break;
         }
         case 2: {
             int sku;
-            std::cout << "Enter SKU to check: ";
+            std::cout << "Enter SKU to remove: ";
             std::cin >> sku;
-            if (itemList.inList(ItemStock(sku, "", 0, ""))) {
-                std::cout << "Item is in the list.\n";
+            ItemStock itemToRemove(sku, "", 0, "");
+            ItemStock* removedItem = hashTable.RemoveItem(&itemToRemove);
+            if (removedItem) {
+                std::cout << "Item removed from the hash table.\n";
             }
             else {
-                std::cout << "Item is not in the list.\n";
+                std::cout << "Item not found in the hash table.\n";
             }
             break;
         }
         case 3: {
-            if (itemList.isEmpty()) {
-                std::cout << "List is empty.\n";
+            int sku;
+            std::cout << "Enter SKU to search: ";
+            std::cin >> sku;
+            ItemStock itemToSearch(sku, "", 0, "");
+            ItemStock* foundItem = hashTable.GetItem(&itemToSearch);
+            if (foundItem) {
+                std::cout << "Item found in the hash table.\n";
             }
             else {
-                std::cout << "List is not empty.\n";
+                std::cout << "Item not found in the hash table.\n";
             }
             break;
         }
         case 4: {
-            std::cout << "Size of list: " << itemList.size() << std::endl;
+            std::cout << "Number of items in the hash table: " << hashTable.GetLength() << std::endl;
             break;
         }
-        case 5: {
-            try {
-                std::cout << "Next item: " << itemList.seeNext().getPartInfo() << std::endl;
-            }
-            catch (ListUnderflowException& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            break;
-        }
-        case 6: {
-            try {
-                std::cout << "Previous item: " << itemList.seePrev().getPartInfo() << std::endl;
-            }
-            catch (ListUnderflowException& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            break;
-        }
-        case 7: {
-            int location;
-            std::cout << "Enter location: ";
-            std::cin >> location;
-            try {
-                std::cout << "Item at location " << location << ": " << itemList.seeAt(location).getPartInfo() << std::endl;
-            }
-            catch (ListUnderflowException& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            catch (std::out_of_range& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            break;
-        }
-        case 8: {
-            try {
-                itemList.removeNext();
-                std::cout << "Next item removed.\n";
-            }
-            catch (ListUnderflowException& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            break;
-        }
-        case 9: {
-            try {
-                itemList.removePrev();
-                std::cout << "Previous item removed.\n";
-            }
-            catch (ListUnderflowException& e) {
-                std::cerr << e.what() << std::endl;
-            }
-            break;
-        }
-        case 10: {
-            itemList.printList();
-        }
-        case 0:
+        case 5:
             std::cout << "Exiting.\n";
             break;
         default:
             std::cout << "Invalid choice. Please try again.\n";
         }
-    } while (choice != 0);
+    } while (choice != 5);
 
     return 0;
 }
