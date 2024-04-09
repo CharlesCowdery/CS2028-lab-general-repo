@@ -23,5 +23,8 @@
     <ClInclude Include="LinearHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemStock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
