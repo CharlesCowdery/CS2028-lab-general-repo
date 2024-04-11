@@ -13,12 +13,13 @@ private:
 
     void empty();
 
-    int hash(std::string val);
 
 public:
     LinearHash();
     LinearHash(int s);
     ~LinearHash();
+
+    int hash(std::string val);
 
     void AddItem(T* val);
     T* RemoveItem(T* val);
