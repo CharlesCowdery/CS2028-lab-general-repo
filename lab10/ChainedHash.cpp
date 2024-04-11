@@ -30,7 +30,6 @@ template<typename T>
 void Chain<T>::removeLink(T* val) {
     if (head == nullptr) {throw NotFound();}
     T* temp = head;
-    T* temp2 = nullptr;
     while (temp->next != nullptr) {
         if (*temp->next == *val) {
             temp2 = temp->next;
