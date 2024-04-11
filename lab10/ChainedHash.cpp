@@ -69,16 +69,24 @@ ChainedHash<T>::ChainedHash(int s) {
 }
 
 template <typename T>
-ChainedHash<T>::~ChainedHash();
+ChainedHash<T>::~ChainedHash() {
+    delete data;
+}
 
 template <typename T>
-void ChainedHash<T>::AddItem(T* val);
+void ChainedHash<T>::AddItem(T* val) {
+    data[hash(*val)].addLink(val);
+}
 
 template <typename T>
-T* ChainedHash<T>::RemoveItem(T* val);
+T* ChainedHash<T>::RemoveItem(T* val) {
+    data[hash(*val)].removeLink(val);
+}
 
 template <typename T>
-T* ChainedHash<T>::GetItem(T* val);
+T* ChainedHash<T>::GetItem(T* val) {
+    return data[hash(*val)].findLink(val);
+}
 
 template <typename T>
 int ChainedHash<T>::GetLength() {
