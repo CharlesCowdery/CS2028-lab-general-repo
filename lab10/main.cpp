@@ -1,94 +1,106 @@
 #include <iostream>
-#include "LinearHash.h"
-#include "ItemStock.h"
+#include <string>
+#include <cstdlib>
+#include "HashTable.h"
+#include "LinkedHashTable.h"
 
-void printMenu() {
-    std::cout << "\nMenu:\n"
-        << "1. Add Item\n"
-        << "2. Remove Item\n"
-        << "3. Get Item\n"
-        << "4. Get Length\n"
-        << "5. Exit\n";
+using namespace std;
+
+// Generate a random SKU
+string generateRandomSKU(int length) {
+    const string charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    string result;
+    for (int i = 0; i < length; ++i) {
+        result.push_back(charset[rand() % charset.length()]);
+    }
+    return result;
+}
+
+// Display menu and get user input
+int getMenuChoice() {
+    int choice;
+    cout << "Prompt the user for the following options:" << endl;
+    cout << "1. User Test" << endl;
+    cout << "2. Automated Test" << endl;
+    cout << "3. Quit" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+    return choice;
+}
+
+// Display user test options
+int getUserTestChoice() {
+    int choice;
+    cout << "For User Test" << endl;
+    cout << "1. Linear Probing from Task 1" << endl;
+    cout << "2. Separate Chaining from Task 4" << endl;
+    cout << "3. Main Menu" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+    return choice;
+}
+
+// Display user test operations
+int getUserTestOperationChoice() {
+    int choice;
+    cout << "For option 1 and 2 of User Test" << endl;
+    cout << "1. Add an item" << endl;
+    cout << "2. Remove an item" << endl;
+    cout << "3. Search an item" << endl;
+    cout << "4. Display length" << endl;
+    cout << "5. Exit to User Test options" << endl;
+    cout << "Enter your choice: ";
+    cin >> choice;
+    return choice;
 }
 
 int main() {
-    LinearHash<ItemStock> hashTable(10);
+    // Seed random number generator
+    srand(time(nullptr));
 
     int choice;
     do {
-        printMenu();
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
+        choice = getMenuChoice();
 
         switch (choice) {
-        case 1: {
-            int sku;
-            std::string description, uom;
-            double price, leadTime, quantity;
-
-            std::cout << "Enter SKU: ";
-            std::cin >> sku;
-            std::cout << "Enter Description: ";
-            std::cin.ignore();
-            std::getline(std::cin, description);
-            std::cout << "Enter Price: ";
-            std::cin >> price;
-            std::cout << "Enter UOM: ";
-            std::cin >> uom;
-            std::cout << "Enter Lead Time: ";
-            std::cin >> leadTime;
-            std::cout << "Enter Quantity On Hand (optional): ";
-            std::cin >> quantity;
-
-            ItemStock newItem(sku, description, price, uom, quantity, leadTime);
-            try {
-                hashTable.AddItem(&newItem);
-                std::cout << "Item added to the hash table.\n";
+            case 1: {
+                int testChoice;
+                do {
+                    testChoice = getUserTestChoice();
+                    switch (testChoice) {
+                        case 1: {
+                            // Test Linear Probing from Task 1
+                            break;
+                        }
+                        case 2: {
+                            // Test Separate Chaining from Task 4
+                            break;
+                        }
+                        case 3: {
+                            // Return to main menu
+                            break;
+                        }
+                        default: {
+                            cout << "Invalid choice. Please try again." << endl;
+                        }
+                    }
+                } while (testChoice != 3);
+                break;
             }
-            catch (const std::runtime_error& e) {
-                std::cerr << e.what() << std::endl;
+            case 2: {
+                // Automated Test
+                break;
             }
-            break;
+            case 3: {
+                // Quit
+                cout << "Exiting program." << endl;
+                break;
+            }
+            default: {
+                cout << "Invalid choice. Please try again." << endl;
+            }
         }
-        case 2: {
-            int sku;
-            std::cout << "Enter SKU to remove: ";
-            std::cin >> sku;
-            ItemStock itemToRemove(sku, "", 0, "");
-            ItemStock* removedItem = hashTable.RemoveItem(&itemToRemove);
-            if (removedItem) {
-                std::cout << "Item removed from the hash table.\n";
-            }
-            else {
-                std::cout << "Item not found in the hash table.\n";
-            }
-            break;
-        }
-        case 3: {
-            int sku;
-            std::cout << "Enter SKU to search: ";
-            std::cin >> sku;
-            ItemStock itemToSearch(sku, "", 0, "");
-            ItemStock* foundItem = hashTable.GetItem(&itemToSearch);
-            if (foundItem) {
-                std::cout << "Item found in the hash table.\n";
-            }
-            else {
-                std::cout << "Item not found in the hash table.\n";
-            }
-            break;
-        }
-        case 4: {
-            std::cout << "Number of items in the hash table: " << hashTable.GetLength() << std::endl;
-            break;
-        }
-        case 5:
-            std::cout << "Exiting.\n";
-            break;
-        default:
-            std::cout << "Invalid choice. Please try again.\n";
-        }
-    } while (choice != 5);
+    } while (choice != 3);
 
     return 0;
 }
