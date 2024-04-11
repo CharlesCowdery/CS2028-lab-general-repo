@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include "HashTable.h"
-#include "LinkedHashTable.h"
+#include "LinearHash.h"
+#include "ChainedHash.h"
 
 using namespace std;
 
